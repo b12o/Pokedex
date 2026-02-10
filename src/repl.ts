@@ -10,10 +10,10 @@ export function cleanInput(input: string): string[] {
 }
 
 export function startREPL(state: State) {
-  state.rl.on("line", (input: string) => {
+  state.rl.on("line", async (input: string) => {
     const [firstArg, _] = cleanInput(input);
     if (firstArg in state.commands) {
-      state.commands[firstArg].callback(state);
+      await state.commands[firstArg].callback(state);
     }
     state.rl.prompt();
   });
