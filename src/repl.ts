@@ -1,4 +1,4 @@
-import readline from "node:readline";
+import { type State } from "./state.js";
 
 export function cleanInput(input: string): string[] {
   if (!input.trim().length) return [];
@@ -9,22 +9,13 @@ export function cleanInput(input: string): string[] {
     .map((item) => item.toLowerCase());
 }
 
-export function startREPL() {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: "Pokedex > ",
-  });
-
-  rl.on("line", (input: string) => {
-    const cleaned = cleanInput(input);
-    if (!cleaned.length) {
-      rl.prompt();
-      return;
+export function startREPL(state: State) {
+  state.rl.on("line", (input: string) => {
+    const [firstArg, _] = cleanInput(input);
+    if (firstArg in state.commands) {
+      state.commands[firstArg].callback(state);
     }
-    console.log(`Your command was: ${cleaned[0]}`);
-    rl.prompt();
+    state.rl.prompt();
   });
-
-  rl.prompt();
+  state.rl.prompt();
 }
