@@ -14,6 +14,8 @@ export function startREPL(state: State) {
     const [firstArg, _] = cleanInput(input);
     if (firstArg in state.commands) {
       await state.commands[firstArg].callback(state);
+    } else {
+      console.log(`Unknown command: ${input}`);
     }
     state.rl.prompt();
   });
