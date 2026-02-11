@@ -1,6 +1,6 @@
 import type { State } from "./state.js";
 import { isEmpty } from "./utils.js";
-import assert from "node:assert/strict";
+import { logger } from "./logger.js";
 
 export async function commandExit(state: State): Promise<void> {
   console.log("Closing the Pokedex... Goodbye!");
@@ -9,13 +9,15 @@ export async function commandExit(state: State): Promise<void> {
 }
 
 export async function commandHelp(state: State): Promise<void> {
-  let helpString = `Welcome to the Pokedex!`;
+  let helpString = "=====================";
+  helpString += `\nWelcome to the Pokedex!`;
   helpString += `\nUsage:\n`;
 
   for (const command in state.commands) {
     helpString += `\n${command}: ${state.commands[command].description}`;
   }
-  console.log(helpString);
+  helpString += "\n=====================";
+  console.log(`${helpString}\n`);
 }
 
 export async function commandMap(
@@ -57,11 +59,17 @@ export async function commandMap(
   const [locations, navUrls] = response;
 
   state.prevLocationsURL = navUrls.previous;
+  state.currentLocationsURL = navUrls.current;
   state.nextLocationsURL = navUrls.next;
 
   for (const location of locations) {
     console.log(location.name);
   }
+  console.log();
+  logger.debug(`previous url: ${state.prevLocationsURL}`);
+  logger.debug(`current url: ${state.currentLocationsURL}`);
+  logger.debug(`next url: ${state.nextLocationsURL}`);
+  console.log();
 }
 
 export async function commandMapNext(state: State): Promise<void> {

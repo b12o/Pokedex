@@ -11,8 +11,9 @@ export type State = {
   rl: Interface;
   commands: Record<string, CLICommand>;
   pokeApi: PokeAPI;
-  nextLocationsURL: string;
   prevLocationsURL: string;
+  currentLocationsURL: string;
+  nextLocationsURL: string;
 };
 
 export type CLICommand = {
@@ -25,22 +26,22 @@ export function GetCommands(): Record<string, CLICommand> {
   return {
     exit: {
       name: "exit",
-      description: "Exit the Pokedex\n",
+      description: "Exit the Pokedex",
       callback: commandExit,
     },
     help: {
       name: "help",
-      description: "Displays a help message\n",
+      description: "Displays a help message",
       callback: commandHelp,
     },
     map: {
       name: "map",
-      description: "Display the next 20 Pokemon locations",
+      description: "Display the next 20 locations",
       callback: commandMapNext,
     },
     mapb: {
       name: "mapb",
-      description: "Display the previous 20 Pokemon locations",
+      description: "Display the previous 20 locations",
       callback: commandMapPrevious,
     },
   };
@@ -55,8 +56,9 @@ export function initState(): State {
     }),
     commands: GetCommands(),
     pokeApi: new PokeAPI(),
-    nextLocationsURL: "",
     prevLocationsURL: "",
+    currentLocationsURL: "",
+    nextLocationsURL: "",
   };
   return state;
 }
