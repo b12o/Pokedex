@@ -21,7 +21,10 @@ export class Cache {
   }
 
   get<T>(key: string): T | undefined {
-    return this.cache.get(key)?.val;
+    const cacheItem = this.cache.get(key);
+    if (!cacheItem) return undefined;
+    if (cacheItem.createdAt < Date.now() - this.interval) return undefined;
+    else return cacheItem.val;
   }
 
   private startReapLoop(interval: number): void {
