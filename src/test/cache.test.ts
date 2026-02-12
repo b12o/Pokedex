@@ -28,6 +28,6 @@ test.concurrent.each(testCases)(
     const reaped = cache.get(key);
     expect(reaped).toBe(undefined);
 
-    cache.stopReapLoop();
+    cache.stopCleanupLoop();
   },
 );

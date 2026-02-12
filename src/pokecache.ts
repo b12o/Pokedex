@@ -5,12 +5,12 @@ type CacheEntry<T> = {
 
 export class Cache {
   private cache = new Map<string, CacheEntry<any>>();
-  private reapIntervalId: NodeJS.Timeout | undefined;
+  private cleanupIntervalId: NodeJS.Timeout | undefined;
   private interval: number = -1;
 
   constructor(interval: number) {
     this.interval = interval;
-    this.startReapLoop(this.interval);
+    this.startCleanupLoop(this.interval);
   }
 
   add<T>(key: string, val: T) {
@@ -27,16 +27,16 @@ export class Cache {
     else return cacheItem.val;
   }
 
-  private startReapLoop(interval: number): void {
+  private startCleanupLoop(interval: number): void {
     // it's important that this is an arrow function in order to use lexical 'this'
-    this.reapIntervalId = setInterval(() => this.reap(), interval);
+    this.cleanupIntervalId = setInterval(() => this.cleanup(), interval);
   }
 
-  stopReapLoop(): void {
-    clearInterval(this.reapIntervalId);
+  stopCleanupLoop(): void {
+    clearInterval(this.cleanupIntervalId);
   }
 
-  reap(): void {
+  cleanup(): void {
     if (this.cache.size === 0) {
       return;
     }
