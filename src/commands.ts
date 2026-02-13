@@ -1,5 +1,5 @@
 import type { State } from "./state.js";
-import { isEmpty } from "./utils.js";
+import { isEmpty, sleep } from "./utils.js";
 import { logger } from "./logger.js";
 
 export async function commandExit(state: State): Promise<void> {
@@ -78,4 +78,8 @@ export async function commandMapNext(state: State): Promise<void> {
 
 export async function commandMapPrevious(state: State): Promise<void> {
   await commandMap(state, "previous");
+}
+
+export async function commandExplore(state: State): Promise<void> {
+  console.log("TODO");
 }

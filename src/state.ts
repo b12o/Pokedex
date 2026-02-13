@@ -4,6 +4,7 @@ import {
   commandHelp,
   commandMapNext,
   commandMapPrevious,
+  commandExplore,
 } from "./commands.js";
 import { PokeAPI } from "./pokeapi.js";
 
@@ -43,6 +44,11 @@ export function GetCommands(): Record<string, CLICommand> {
       name: "mapb",
       description: "Display the previous 20 locations",
       callback: commandMapPrevious,
+    },
+    explore: {
+      name: "explore",
+      description: "Shows list of pokemons in this area",
+      callback: commandExplore,
     },
   };
 }
