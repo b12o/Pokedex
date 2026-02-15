@@ -12,16 +12,19 @@ export class PokeAPI {
     this.cache = new Cache(PokeAPI.CACHE_INTERVAL_MS);
   }
 
+  /**
+   * Returns list of 20 locations at a time
+   */
   async fetchLocations(
     pageURL?: string,
   ): Promise<[ShallowLocations, NavURLs] | ErrorResponse> {
     const url = pageURL ? pageURL : `${PokeAPI.BASE_URL}/location-area`;
 
-    const cacheItem = this.cache.get<MapItem>(url);
-    if (cacheItem) {
+    const cached = this.cache.get<MapItem>(url);
+    if (cached) {
       logger.info(`found cached object: ${url}`);
-      const cacheLocations = cacheItem.shallowLocations;
-      const cacheNavUrls = cacheItem.navUrls;
+      const cacheLocations = cached.shallowLocations;
+      const cacheNavUrls = cached.navUrls;
       return [cacheLocations, cacheNavUrls];
     }
 
@@ -67,7 +70,13 @@ export class PokeAPI {
   ): Promise<string[] | ErrorResponse> {
     const url = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
 
-    // TODO: cache
+    const cached = this.cache.get<LocationAreaResponse>(url);
+    if (cached) {
+      logger.info(`found cached object: ${url}`);
+      return cached.pokemon_encounters.map(
+        (encounter) => encounter.pokemon.name,
+      );
+    }
     logger.info("No cached object found. Attempt fetch request ...");
 
     // simulate network request
@@ -81,13 +90,10 @@ export class PokeAPI {
         statusText: res.statusText,
       };
     }
-
     const data: LocationAreaResponse = await res.json();
 
-    const pokemon = data.pokemon_encounters.map(
-      (encounter) => encounter.pokemon.name,
-    );
-    return pokemon;
+    this.cache.add(url, data);
+    return data.pokemon_encounters.map((encounter) => encounter.pokemon.name);
   }
 }
 
