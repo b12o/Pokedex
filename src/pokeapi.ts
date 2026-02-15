@@ -1,10 +1,11 @@
 import { Cache } from "./pokecache.js";
 import { sleep } from "./utils.js";
 import { logger } from "./logger.js";
+import type { LocationAreaResponse } from "./types.js";
 
 export class PokeAPI {
   private static readonly BASE_URL: string = "https://pokeapi.co/api/v2";
-  private static readonly CACHE_INTERVAL_MS = 100_000;
+  private static readonly CACHE_INTERVAL_MS = 100_000; // cleanup cache after 100s
   private cache: Cache;
 
   constructor() {
@@ -54,6 +55,39 @@ export class PokeAPI {
     this.cache.add(navUrls.current, mapItem);
 
     return [data["results"], navUrls];
+  }
+
+  /**
+   * Explores a location area and returns a list of pokemons in that location
+   * @param locationArea name of location area to search for
+   * @returns string array of found pokemon or error response
+   */
+  async exploreLocation(
+    locationArea: string,
+  ): Promise<string[] | ErrorResponse> {
+    const url = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
+
+    // TODO: cache
+    logger.info("No cached object found. Attempt fetch request ...");
+
+    // simulate network request
+    await sleep(1000);
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      return {
+        isError: true,
+        statusCode: res.status,
+        statusText: res.statusText,
+      };
+    }
+
+    const data: LocationAreaResponse = await res.json();
+
+    const pokemon = data.pokemon_encounters.map(
+      (encounter) => encounter.pokemon.name,
+    );
+    return pokemon;
   }
 }
 

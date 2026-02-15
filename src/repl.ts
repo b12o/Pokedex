@@ -11,9 +11,9 @@ export function cleanInput(input: string): string[] {
 
 export function startREPL(state: State) {
   state.rl.on("line", async (input: string) => {
-    const [firstArg, _] = cleanInput(input);
+    const [firstArg, ...otherArgs] = cleanInput(input);
     if (firstArg in state.commands) {
-      await state.commands[firstArg].callback(state);
+      await state.commands[firstArg].callback(state, ...otherArgs);
     } else {
       console.log(`Unknown command: ${input}`);
     }

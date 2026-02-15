@@ -80,6 +80,29 @@ export async function commandMapPrevious(state: State): Promise<void> {
   await commandMap(state, "previous");
 }
 
-export async function commandExplore(state: State): Promise<void> {
-  console.log("TODO");
+export async function commandExplore(
+  state: State,
+  locationArea: string,
+): Promise<void> {
+  logger.info(`Exploring ${locationArea} ...`);
+  const response = await state.pokeApi.exploreLocation(locationArea);
+  if ("isError" in response) {
+    logger.error(`${response.statusCode} - ${response.statusText}`);
+    switch (response.statusCode) {
+      case 404:
+        console.log(
+          `Hmmm... I can't find ${locationArea}. Are you sure that's the correct name?`,
+        );
+        return;
+      default:
+        console.log(
+          `Ooops! The Pokedex encountered and error while exploring ${locationArea}.\nPlease try again later.`,
+        );
+        state.rl.close();
+        process.exit(0);
+    }
+  }
+  console.log("Found Pokemon:");
+  response.forEach((pokemon) => console.log(`  - ${pokemon}`));
+  console.log();
 }
