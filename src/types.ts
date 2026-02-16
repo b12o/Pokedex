@@ -1,4 +1,21 @@
-export type LocationAreaResponse = {
+// https://pokeapi.co/api/v2/location-area
+// from the pokeapi:
+// calling any API endopint without a resource ID will return a paginated list of
+// available resources for that API.
+//
+// e.g. https://pokeapi.co/api/v2/location-area
+export type ResourceList = {
+  previous: string | null;
+  current: string;
+  next: string;
+  results: {
+    name: string;
+    url: string;
+  }[];
+};
+
+// https://pokeapi.co/api/v2/location-area/<location-area-name>
+export type LocationArea = {
   id: number;
   name: string;
   game_index: number;

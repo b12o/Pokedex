@@ -56,13 +56,13 @@ export async function commandMap(
     process.exit(0);
   }
 
-  const [locations, navUrls] = response;
+  const data = response;
 
-  state.prevLocationsURL = navUrls.previous;
-  state.currentLocationsURL = navUrls.current;
-  state.nextLocationsURL = navUrls.next;
+  state.prevLocationsURL = data.previous === null ? "" : data.previous;
+  state.currentLocationsURL = data.current;
+  state.nextLocationsURL = data.next === null ? "" : data.next;
 
-  for (const location of locations) {
+  for (const location of data.results) {
     console.log(location.name);
   }
   console.log();

@@ -1,7 +1,7 @@
 import { Cache } from "./pokecache.js";
 import { sleep } from "./utils.js";
 import { logger } from "./logger.js";
-import type { LocationAreaResponse } from "./types.js";
+import type { ResourceList, LocationArea } from "./types.js";
 
 export class PokeAPI {
   private static readonly BASE_URL: string = "https://pokeapi.co/api/v2";
@@ -17,15 +17,13 @@ export class PokeAPI {
    */
   async fetchLocations(
     pageURL?: string,
-  ): Promise<[ShallowLocations, NavURLs] | ErrorResponse> {
+  ): Promise<ResourceList | ErrorResponse> {
     const url = pageURL ? pageURL : `${PokeAPI.BASE_URL}/location-area`;
 
-    const cached = this.cache.get<MapItem>(url);
+    const cached = this.cache.get<ResourceList>(url);
     if (cached) {
       logger.info(`found cached object: ${url}`);
-      const cacheLocations = cached.shallowLocations;
-      const cacheNavUrls = cached.navUrls;
-      return [cacheLocations, cacheNavUrls];
+      return cached;
     }
 
     logger.info("No cached object found. Attempt fetch request ...");
@@ -42,22 +40,11 @@ export class PokeAPI {
       };
     }
 
-    const data = await res.json();
-    const navUrls: NavURLs = {
-      previous: data["previous"] !== null ? data["previous"] : "",
-      current: url,
-      next: data["next"] !== null ? data["next"] : "",
-    };
-
+    const data: ResourceList = await res.json();
+    data.current = url;
     logger.info(`Adding map item ${url} to cache ...`);
-
-    const mapItem: MapItem = {
-      shallowLocations: data["results"],
-      navUrls,
-    };
-    this.cache.add(navUrls.current, mapItem);
-
-    return [data["results"], navUrls];
+    this.cache.add(url, data);
+    return data;
   }
 
   /**
@@ -70,7 +57,7 @@ export class PokeAPI {
   ): Promise<string[] | ErrorResponse> {
     const url = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
 
-    const cached = this.cache.get<LocationAreaResponse>(url);
+    const cached = this.cache.get<LocationArea>(url);
     if (cached) {
       logger.info(`found cached object: ${url}`);
       return cached.pokemon_encounters.map(
@@ -90,7 +77,7 @@ export class PokeAPI {
         statusText: res.statusText,
       };
     }
-    const data: LocationAreaResponse = await res.json();
+    const data: LocationArea = await res.json();
 
     this.cache.add(url, data);
     return data.pokemon_encounters.map((encounter) => encounter.pokemon.name);
@@ -102,18 +89,3 @@ export type ErrorResponse = {
   statusCode: number;
   statusText: string;
 };
-
-export type NavURLs = {
-  previous: string;
-  current: string;
-  next: string;
-};
-
-export type ShallowLocations = { name: string; url: string }[];
-
-export type MapItem = {
-  shallowLocations: ShallowLocations;
-  navUrls: NavURLs;
-};
-
-export type Location = {}; // TODO:
