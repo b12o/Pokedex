@@ -75,8 +75,9 @@ export type State = {
   rl: Interface;
   pokeApi: PokeAPI;
   commands: Record<string, CLICommand>;
-  prevLocationsURL: string;
-  currentLocationsURL: string;
-  nextLocationsURL: string;
+  prevLocationAreasURL: string;
+  currentLocationAreasURL: string;
+  nextLocationAreasURL: string;
+  currentLocationAreaName: string;
   pokedex: Record<string, Pokemon>;
 };

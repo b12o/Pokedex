@@ -5,6 +5,7 @@ import {
   commandMapNext,
   commandMapPrevious,
   commandExplore,
+  commandCatch,
 } from "./commands.js";
 import { PokeAPI } from "./pokeapi.js";
 
@@ -33,9 +34,14 @@ export function GetCommands(): Record<string, CLICommand> {
       callback: commandMapPrevious,
     },
     explore: {
-      name: "explore",
+      name: "explore <location-area>",
       description: "Shows list of pokemons in this area",
       callback: commandExplore,
+    },
+    catch: {
+      name: "catch <pokemon>",
+      description: "Attempt to catch a pokemon",
+      callback: commandCatch,
     },
   };
 }
@@ -49,9 +55,10 @@ export function initState(): State {
     }),
     commands: GetCommands(),
     pokeApi: new PokeAPI(),
-    prevLocationsURL: "",
-    currentLocationsURL: "",
-    nextLocationsURL: "",
+    prevLocationAreasURL: "",
+    currentLocationAreasURL: "",
+    nextLocationAreasURL: "",
+    currentLocationAreaName: "",
     pokedex: {},
   };
   return state;

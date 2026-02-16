@@ -57,7 +57,7 @@ export class PokeAPI {
   ): Promise<string[] | ErrorResponse> {
     const url = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
 
-    const cached = this.cache.get<LocationArea>(url);
+    const cached = this.cache.get<LocationArea>(locationArea);
     if (cached) {
       logger.info(`found cached object: ${url}`);
       return cached.pokemon_encounters.map(
@@ -79,7 +79,7 @@ export class PokeAPI {
     }
     const data: LocationArea = await res.json();
 
-    this.cache.add(url, data);
+    this.cache.add(locationArea, data);
     return data.pokemon_encounters.map((encounter) => encounter.pokemon.name);
   }
 }
