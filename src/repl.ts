@@ -1,4 +1,4 @@
-import { type State } from "./state.js";
+import { type State } from "./types.js";
 
 export function cleanInput(input: string): string[] {
   if (!input.trim().length) return [];

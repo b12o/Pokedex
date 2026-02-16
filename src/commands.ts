@@ -1,4 +1,4 @@
-import type { State } from "./state.js";
+import { type State } from "./types.js";
 import { isEmpty, sleep } from "./utils.js";
 import { logger } from "./logger.js";
 

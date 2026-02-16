@@ -1,4 +1,4 @@
-import { createInterface, type Interface } from "node:readline";
+import { createInterface } from "node:readline";
 import {
   commandExit,
   commandHelp,
@@ -8,20 +8,7 @@ import {
 } from "./commands.js";
 import { PokeAPI } from "./pokeapi.js";
 
-export type State = {
-  rl: Interface;
-  commands: Record<string, CLICommand>;
-  pokeApi: PokeAPI;
-  prevLocationsURL: string;
-  currentLocationsURL: string;
-  nextLocationsURL: string;
-};
-
-export type CLICommand = {
-  name: string;
-  description: string;
-  callback: (state: State, ...args: string[]) => Promise<void>;
-};
+import type { State, CLICommand } from "./types.js";
 
 export function GetCommands(): Record<string, CLICommand> {
   return {
@@ -65,6 +52,7 @@ export function initState(): State {
     prevLocationsURL: "",
     currentLocationsURL: "",
     nextLocationsURL: "",
+    pokedex: {},
   };
   return state;
 }

@@ -1,7 +1,7 @@
+import type { ResourceList, LocationArea, ErrorResponse } from "./types.js";
 import { Cache } from "./pokecache.js";
 import { sleep } from "./utils.js";
 import { logger } from "./logger.js";
-import type { ResourceList, LocationArea } from "./types.js";
 
 export class PokeAPI {
   private static readonly BASE_URL: string = "https://pokeapi.co/api/v2";
@@ -83,9 +83,3 @@ export class PokeAPI {
     return data.pokemon_encounters.map((encounter) => encounter.pokemon.name);
   }
 }
-
-export type ErrorResponse = {
-  isError: boolean;
-  statusCode: number;
-  statusText: string;
-};
