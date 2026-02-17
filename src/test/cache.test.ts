@@ -25,8 +25,8 @@ test.concurrent.each(testCases)(
 
     await sleep(interval + 50);
 
-    const reaped = cache.get(key);
-    expect(reaped).toBe(undefined);
+    const cleaned = cache.get(key);
+    expect(cleaned).toBe(undefined);
 
     cache.stopCleanupLoop();
   },
