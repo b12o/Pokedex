@@ -11,7 +11,7 @@ import { PokeAPI } from "./pokeapi.js";
 
 import type { State, CLICommand } from "./types.js";
 
-export function GetCommands(): Record<string, CLICommand> {
+function GetCommands(): Record<string, CLICommand> {
   return {
     exit: {
       name: "exit",
