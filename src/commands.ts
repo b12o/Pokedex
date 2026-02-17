@@ -162,7 +162,9 @@ Please explore an area first!\n(Need help? Type 'help' to view your commands.)",
   const throwVal = Math.round(Math.random() * 100);
 
   if (throwVal >= difficulty) {
-    console.log(`Caught ${pokemon}! ${pokemon} was added to your pokedex!`);
+    console.log(
+      `Caught ${pokemon}! ${pokemon} was added to your pokedex!\nYou may now inspect it with the 'inspect' command`,
+    );
     state.pokedex[pokemon] = newPokemon;
     return;
   }
@@ -191,4 +193,14 @@ export async function commandInspect(state: State, pokemon: string) {
   console.log("Types:");
   pokemonObject.types.forEach((type) => console.log(`    -${type.type.name}`));
   console.log();
+}
+
+export async function commandShowPokedex(state: State) {
+  if (!Object.keys(state.pokedex).length) {
+    console.log(
+      "You do not have any pokemon in your pokedex... yet! Let's catch some!",
+    );
+  }
+  console.log("Your Pokedex:");
+  Object.keys(state.pokedex).forEach((key) => console.log(`  -${key}`));
 }
