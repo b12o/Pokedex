@@ -1,4 +1,4 @@
-import { ErrorResponse, type State } from "./types.js";
+import type { Pokemon, State } from "./types.js";
 import { isEmpty, sleep } from "./utils.js";
 import { logger } from "./logger.js";
 
@@ -134,5 +134,17 @@ Please explore an area first!\n(Need help? Type 'help' to view your commands.)",
     return;
   }
   console.log(`Throwing a Pokeball at ${pokemon}...`);
+  await sleep(2000); // oooo suspension!
+  const probability = 40;
+  if (Math.round(Math.random() * 100) < probability) {
+    console.log(`Caught ${pokemon}! ${pokemon} was added to your pokedex!`);
+    const newPokemon: Pokemon = {
+      name: "test",
+      base_experience: 67,
+    };
+    state.pokedex[pokemon] = newPokemon;
+    return;
+  }
+  console.log(`${pokemon} broke free!`);
   return;
 }

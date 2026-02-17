@@ -63,6 +63,7 @@ export type ErrorResponse = {
 
 export type Pokemon = {
   name: string;
+  base_experience: number;
 };
 
 export type CLICommand = {
