@@ -11,11 +11,11 @@ const currentLevel: Level = (process.env.LOG_LEVEL as Level) || "info";
 
 export const logger = {
   debug: (msg: string) =>
-    levels[currentLevel] <= levels.debug && console.log(`[DEBUG] ${msg}`),
+    levels[currentLevel] <= levels.debug && console.log(`[DEBUG]\t${msg}`),
   info: (msg: string) =>
-    levels[currentLevel] <= levels.info && console.log(`[INFO] ${msg}`),
+    levels[currentLevel] <= levels.info && console.log(`[INFO]\t${msg}`),
   warn: (msg: string) =>
-    levels[currentLevel] <= levels.warn && console.log(`[WARN] ${msg}`),
+    levels[currentLevel] <= levels.warn && console.log(`[WARN]\t${msg}`),
   error: (msg: string) =>
-    levels[currentLevel] <= levels.error && console.log(`[ERROR] ${msg}`),
+    levels[currentLevel] <= levels.error && console.log(`[ERROR]\t${msg}`),
 };
