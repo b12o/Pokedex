@@ -169,3 +169,26 @@ Please explore an area first!\n(Need help? Type 'help' to view your commands.)",
   console.log(`${pokemon} broke free!`);
   return;
 }
+
+/**
+ * inspect a pokemon from your pokedex
+ * @param pokemon
+ * @returns object containign pokemon details (size, hp, etc)
+ */
+export async function commandInspect(state: State, pokemon: string) {
+  if (!(pokemon in state.pokedex)) {
+    console.log("You have not yet caught that pokemon.");
+    return;
+  }
+  const pokemonObject = state.pokedex[pokemon];
+  console.log(`Name: ${pokemonObject.name}`);
+  console.log(`Height: ${pokemonObject.height}`);
+  console.log(`Weight: ${pokemonObject.weight}`);
+  console.log("Stats:");
+  pokemonObject.stats.forEach((stat) =>
+    console.log(`    -${stat.stat.name}: ${stat.base_stat}`),
+  );
+  console.log("Types:");
+  pokemonObject.types.forEach((type) => console.log(`    -${type.type.name}`));
+  console.log();
+}

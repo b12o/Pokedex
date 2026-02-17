@@ -6,6 +6,7 @@ import {
   commandMapPrevious,
   commandExplore,
   commandCatch,
+  commandInspect,
 } from "./commands.js";
 import { PokeAPI } from "./pokeapi.js";
 
@@ -42,6 +43,11 @@ function GetCommands(): Record<string, CLICommand> {
       name: "catch <pokemon>",
       description: "Attempt to catch a pokemon",
       callback: commandCatch,
+    },
+    inspect: {
+      name: "inspect <pokemon>",
+      description: "Inspect a pokemon from your pokedex",
+      callback: commandInspect,
     },
   };
 }

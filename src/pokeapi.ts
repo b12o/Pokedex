@@ -118,9 +118,26 @@ export class PokeAPI {
     logger.debug(
       `pokeapi.ts->getPokemon: pokemon name: ${pokemonData.name}, base_exp: ${pokemonData.base_experience}`,
     );
-    return {
+
+    const pokemonObject: Pokemon = {
       name: pokemonData.name,
       base_experience: pokemonData.base_experience,
+      height: pokemonData.height,
+      weight: pokemonData.weight,
+      stats: pokemonData.stats,
+      types: pokemonData.types,
     };
+
+    logger.debug("");
+    logger.debug(`pokeapi.ts->getPokemon: pokemon details:`);
+    logger.debug(
+      `pokeapi.ts->getPokemon: base exp: ${pokemonObject.base_experience}`,
+    );
+    logger.debug(`pokeapi.ts->getPokemon: height: ${pokemonObject.height}`);
+    logger.debug(`pokeapi.ts->getPokemon: weight: ${pokemonObject.weight}`);
+    logger.debug(`pokeapi.ts->getPokemon: stats: ${pokemonObject.stats}`);
+    logger.debug(`pokeapi.ts->getPokemon: types: ${pokemonObject.types}`);
+    logger.debug("");
+    return pokemonObject;
   }
 }
