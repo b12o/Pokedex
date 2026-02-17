@@ -66,9 +66,15 @@ export async function commandMap(
     console.log(location.name);
   }
   console.log();
-  logger.debug(`previous url: ${state.prevLocationAreasURL}`);
-  logger.debug(`current url: ${state.currentLocationAreasURL}`);
-  logger.debug(`next url: ${state.nextLocationAreasURL}`);
+  logger.debug(
+    `commands.ts->commandMap: previous url: ${state.prevLocationAreasURL}`,
+  );
+  logger.debug(
+    `commands.ts->commandMap: current url: ${state.currentLocationAreasURL}`,
+  );
+  logger.debug(
+    `commands.ts->commandMap: next url: ${state.nextLocationAreasURL}`,
+  );
   console.log();
 }
 
@@ -84,10 +90,9 @@ export async function commandExplore(
   state: State,
   locationArea: string,
 ): Promise<void> {
-  logger.info(`Exploring ${locationArea} ...`);
+  logger.info(`commands.ts->commandExplore: exploring ${locationArea} ...`);
   const response = await state.pokeApi.exploreLocation(locationArea);
   if ("isError" in response) {
-    logger.error(`${response.statusCode} - ${response.statusText}`);
     switch (response.statusCode) {
       case 404:
         console.log(
@@ -124,7 +129,13 @@ Please explore an area first!\n(Need help? Type 'help' to view your commands.)",
 
   const response = await state.pokeApi.exploreLocation(locationArea);
   if ("isError" in response) {
-    // TODO: handle error
+    // this should never occur since state.locationArea HAS to be a valid location, but just in case
+    logger.error(
+      `commands.ts->commandCatch: locationArea should be valid! (was ${locationArea}`,
+    );
+    console.log(
+      "Ooops! There was an error with the pokedex. Please try again later.",
+    );
     return;
   }
 
@@ -133,15 +144,25 @@ Please explore an area first!\n(Need help? Type 'help' to view your commands.)",
 (${state.currentLocationAreaName}).\nAre you sure this pokemon can be found here?`);
     return;
   }
+
+  const newPokemon = await state.pokeApi.getPokemon(pokemon);
+  if ("isError" in newPokemon) {
+    // since we already checked if the pokemon exists in this region, any error here has to be a 500 error
+    console.log(
+      `Ooops! Something went wrong trying to catch ${pokemon}. Please try again later.`,
+    );
+    return;
+  }
+
   console.log(`Throwing a Pokeball at ${pokemon}...`);
-  await sleep(2000); // oooo suspension!
-  const probability = 40;
-  if (Math.round(Math.random() * 100) < probability) {
+  await sleep(2000); // the suspense! I can't handle it!
+
+  const probability = Math.round(newPokemon.base_experience * 0.25);
+  const difficulty = Math.min(probability, 80);
+  const throwVal = Math.round(Math.random() * 100);
+
+  if (throwVal >= difficulty) {
     console.log(`Caught ${pokemon}! ${pokemon} was added to your pokedex!`);
-    const newPokemon: Pokemon = {
-      name: "test",
-      base_experience: 67,
-    };
     state.pokedex[pokemon] = newPokemon;
     return;
   }

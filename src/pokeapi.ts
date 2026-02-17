@@ -1,4 +1,9 @@
-import type { ResourceList, LocationArea, ErrorResponse } from "./types.js";
+import type {
+  Pokemon,
+  ResourceList,
+  LocationArea,
+  ErrorResponse,
+} from "./types.js";
 import { Cache } from "./pokecache.js";
 import { sleep } from "./utils.js";
 import { logger } from "./logger.js";
@@ -18,20 +23,24 @@ export class PokeAPI {
   async fetchLocations(
     pageURL?: string,
   ): Promise<ResourceList | ErrorResponse> {
-    const url = pageURL ? pageURL : `${PokeAPI.BASE_URL}/location-area`;
+    const endpoint = pageURL ? pageURL : `${PokeAPI.BASE_URL}/location-area`;
 
-    const cached = this.cache.get<ResourceList>(url);
+    const cached = this.cache.get<ResourceList>(endpoint);
     if (cached) {
-      logger.info(`found cached object: ${url}`);
+      logger.info(
+        `pokeapi.ts->fetchLocations: found cached object: ${endpoint}`,
+      );
       return cached;
     }
 
-    logger.info("No cached object found. Attempt fetch request ...");
+    logger.info(
+      "pokeapi.ts->fetchLocations: no cached object found. Attempt fetch request ...",
+    );
 
     // simulate network request
     await sleep(1000);
 
-    const res = await fetch(url);
+    const res = await fetch(endpoint);
     if (!res.ok) {
       return {
         isError: true,
@@ -41,9 +50,11 @@ export class PokeAPI {
     }
 
     const data: ResourceList = await res.json();
-    data.current = url;
-    logger.info(`Adding map item ${url} to cache ...`);
-    this.cache.add(url, data);
+    data.current = endpoint;
+    logger.info(
+      `pokeapi.ts->fetchLocations: adding map item ${endpoint} to cache ...`,
+    );
+    this.cache.add(endpoint, data);
     return data;
   }
 
@@ -55,22 +66,29 @@ export class PokeAPI {
   async exploreLocation(
     locationArea: string,
   ): Promise<string[] | ErrorResponse> {
-    const url = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
+    const endpoint = `${PokeAPI.BASE_URL}/location-area/${locationArea}`;
 
     const cached = this.cache.get<LocationArea>(locationArea);
     if (cached) {
-      logger.info(`found cached object: ${url}`);
+      logger.info(
+        `pokeapi.ts->exploreLocation: found cached object: ${endpoint}`,
+      );
       return cached.pokemon_encounters.map(
         (encounter) => encounter.pokemon.name,
       );
     }
-    logger.info("No cached object found. Attempt fetch request ...");
+    logger.info(
+      "pokeapi.ts->exploreLocation: no cached object found. Attempt fetch request ...",
+    );
 
     // simulate network request
     await sleep(1000);
 
-    const res = await fetch(url);
+    const res = await fetch(endpoint);
     if (!res.ok) {
+      logger.error(
+        `pokeapi.ts->exploreLocation: API request to ${endpoint} failed: ${res.status} - ${res.statusText}`,
+      );
       return {
         isError: true,
         statusCode: res.status,
@@ -81,5 +99,28 @@ export class PokeAPI {
 
     this.cache.add(locationArea, data);
     return data.pokemon_encounters.map((encounter) => encounter.pokemon.name);
+  }
+
+  async getPokemon(pokemon: string): Promise<Pokemon | ErrorResponse> {
+    const endpoint = `${PokeAPI.BASE_URL}/pokemon/${pokemon}`;
+    const res = await fetch(endpoint);
+    if (!res.ok) {
+      logger.error(
+        `pokeapi.ts->getPokemon: API request to ${endpoint} failed: ${res.status} - ${res.statusText}`,
+      );
+      return {
+        isError: true,
+        statusCode: res.status,
+        statusText: res.statusText,
+      };
+    }
+    const pokemonData: Pokemon = await res.json();
+    logger.debug(
+      `pokeapi.ts->getPokemon: pokemon name: ${pokemonData.name}, base_exp: ${pokemonData.base_experience}`,
+    );
+    return {
+      name: pokemonData.name,
+      base_experience: pokemonData.base_experience,
+    };
   }
 }
