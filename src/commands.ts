@@ -65,7 +65,7 @@ export async function commandMap(
   for (const location of data.results) {
     console.log(location.name);
   }
-  console.log();
+  logger.debug("");
   logger.debug(
     `commands.ts->commandMap: previous url: ${state.prevLocationAreasURL}`,
   );
@@ -75,6 +75,7 @@ export async function commandMap(
   logger.debug(
     `commands.ts->commandMap: next url: ${state.nextLocationAreasURL}`,
   );
+  logger.debug("");
   console.log();
 }
 
