@@ -1,12 +1,6 @@
 import { type Interface } from "node:readline";
 import { PokeAPI } from "./pokeapi.js";
 
-// https://pokeapi.co/api/v2/location-area
-// from the pokeapi:
-// calling any API endopint without a resource ID will return a paginated list of
-// available resources for that API.
-//
-// e.g. https://pokeapi.co/api/v2/location-area
 export type ResourceList = {
   previous: string | null;
   current: string;
@@ -17,7 +11,6 @@ export type ResourceList = {
   }[];
 };
 
-// https://pokeapi.co/api/v2/location-area/<location-area-name>
 export type LocationArea = {
   id: number;
   name: string;
